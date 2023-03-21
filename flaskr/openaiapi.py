@@ -1,7 +1,6 @@
 import openai
 import os
 key = os.environ.get('apikey')
-print(key)
 openai.api_key = key
 
 
