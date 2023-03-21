@@ -1,3 +1,3 @@
 #!/bin/bash
-export apikey=sk-asdfasdfASDf
+export apikey=sk-....
 flask --app flaskr --debug run
