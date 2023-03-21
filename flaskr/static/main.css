@@ -1,0 +1,24 @@
+body {
+  background-color: #353333;
+}
+
+.chat-user {
+  border-radius: 10px;
+  background-color: #000000;
+  color: #ffffff;
+  margin: 5px;
+  padding-left: 2%;
+}
+
+.chat-gpt {
+  border-radius: 10px;
+  color: #ffffff;
+  padding-left: 3px;
+  padding-left: 2%;
+
+}
+
+.mt-5 {
+  color: #ffffff;
+}
+

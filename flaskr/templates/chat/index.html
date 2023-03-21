@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chat-GPT API</title>
+    <link href="{{url_for('static', filename='bootstrap.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='highlight.min.css')}}">
+    <link href="{{url_for('static', filename='main.css')}}" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Chat GPT API</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
+        <div class="container">
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <div id="list-group" class="list-group w-auto">
+
+            </div>
+
+            <div class="input-group mb-3">
+                <textarea class="form-control" id="chat-input"
+                    placeholder="Enter your text and ask with Shift+Enter or press the button"
+                    style="height: 150px;"></textarea>
+            </div>
+            <div class="input-group-append">
+                <button id="gpt-button" class="btn btn-primary">Ask ChatGPT</button>
+            </div>
+        </div>
+    </main>
+
+
+    <script>
+        const button = document.getElementById('gpt-button');
+        button.addEventListener('click', handler);
+
+        const inp = document.getElementById('chat-input');
+        inp.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && event.shiftKey) {
+                handler();
+            }
+        });
+
+        function handler() {
+            var question = document.getElementById("chat-input").value;
+            var listGroup = document.getElementById('list-group');
+            document.getElementById("chat-input").value = "";
+            listGroup.innerHTML += `
+                                        <div class="d-flex gap-2 w-100 justify-content-between chat-user">
+                                        <div>
+                                            <p class="mb-0 opacity-75">${question.replace(/\n/g, '<br/>')}</p>
+                                        </div>
+                                        </div>
+                                    `;
+            let data = { "question": question };
+
+            listGroup.innerHTML += `
+                                <div class="d-flex gap-2 w-100 justify-content-between chat-gpt" id="loading">
+                                    <div>
+                                        <p class="mb-0 opacity-75">Thinking....</p>
+                                    </div>
+                                </div>
+                            `;
+
+            fetch("{{ url_for('chat.index') }}", { "method": "POST", "headers": { "Content-Type": "application/json" }, "body": JSON.stringify(data) })
+                .then(response => response.json())
+                .then(data => {
+
+                    marked.setOptions({
+                        highlight: function (code) {
+                            return hljs.highlightAuto(code).value;
+                        },
+                        langPrefix: 'hljs language-',
+                    });
+                    var t = marked.parse(data.answer);
+                    const divToRemove = document.getElementById('loading');
+                    divToRemove.parentNode.removeChild(divToRemove);
+                    listGroup.innerHTML += `
+                                            <div class="d-flex gap-2 w-100 justify-content-between chat-gpt">
+                                            <div>
+                                            <p class="mb-0 opacity-75">${t}</p>
+                                            </div>
+                                        </div>
+                            `;
+
+                    hljs.highlightAll();
+                });
+
+
+        };
+    </script>
+
+</body>
+
+</html>
