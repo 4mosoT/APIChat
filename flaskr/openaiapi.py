@@ -18,4 +18,5 @@ def completion(text):
     return r
 
 def clear():
-    messages.clear()
+    messages[1:] = []
+    
