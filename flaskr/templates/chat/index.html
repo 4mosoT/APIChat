@@ -19,6 +19,7 @@
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Chat GPT API</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
@@ -30,6 +31,8 @@
 
                     </ul>
                 </div>
+                <input id="change-system-input" value="{{system}}">
+                <button id="change-system-button" class="btn btn-primary">Change system</button>
             </div>
         </nav>
     </header>
@@ -49,18 +52,33 @@
             <div class="input-group mb-3">
                 <textarea class="form-control" id="chat-input"
                     placeholder="Enter your text and ask with Shift+Enter or press the button"
-                    style="height: 150px;"></textarea>
+                    style="height: 100px;"></textarea>
             </div>
             <div class="input-group-append">
                 <button id="gpt-button" class="btn btn-primary">Ask ChatGPT</button>
+                <button id="gpt-button-clear" class="btn btn-primary"
+                    onclick=" location.href= '{{url_for('chat.clear')}}'">Clear context</button>
             </div>
-        </div>
     </main>
 
 
     <script>
+        const buttonChangesystem = document.getElementById('change-system-button');
+        buttonChangesystem.addEventListener('click', handler_changesystem);
+
+        function handler_changesystem() {
+            var system = document.getElementById("change-system-input").value;
+            let data = { "system": system };
+            fetch("{{ url_for('chat.change_system') }}", { "method": "POST", "headers": { "Content-Type": "application/json" }, "body": JSON.stringify(data) })
+                .then(response => response.json())
+                .then(data => {
+                    location.reload();
+                });
+        };
+
         const button = document.getElementById('gpt-button');
         button.addEventListener('click', handler);
+
 
         const inp = document.getElementById('chat-input');
         inp.addEventListener('keydown', function (e) {

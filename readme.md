@@ -1,4 +1,4 @@
 - Simplemente instalar las librerías de python "flask" y "openai".
 - Registrarse e ingresar un método de pago en https://platform.openai.com/account/billing/payment-methods.
-- Crear una key https://platform.openai.com/account/api-keys y copiarla en el archivo run_app.sh
+- Crear una key https://platform.openai.com/account/api-keys y guardarla en una variable de entorno llamada openaikey (en linux: export openaikey=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx).
 - Ejecutar el archivo run_app.sh
