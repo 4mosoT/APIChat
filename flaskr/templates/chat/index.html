@@ -19,7 +19,7 @@
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            
+
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Chat GPT API</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
@@ -31,8 +31,22 @@
 
                     </ul>
                 </div>
-                <input id="change-system-input" value="{{system}}">
-                <button id="change-system-button" class="btn btn-primary">Change system</button>
+                <div style="margin-right: 50%;">
+                    <label for="select_version" style="color: aliceblue;">Select model:</label>
+                    <select id="select_version" onchange="change_version()">
+                        {% for version in models %}
+                        {% if version == current_model %}
+                        <option value="{{version}}" selected> {{version}} </option>
+                        {% else %}
+                        <option value="{{version}}"> {{version}} </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <input id="change-system-input" value="{{system}}">
+                    <button id="change-system-button" class="btn btn-primary">Change system</button>
+                </div>
             </div>
         </nav>
     </header>
@@ -63,6 +77,18 @@
 
 
     <script>
+
+        function change_version(){
+            var version = document.getElementById("select_version").value;
+            let data = { "version": version };
+            fetch("{{ url_for('chat.change_version') }}", { "method": "POST", "headers": { "Content-Type": "application/json" }, "body": JSON.stringify(data) })
+                .then(response => response.json())
+                .then(data => {
+                    location.reload();
+                });
+            
+        }
+
         const buttonChangesystem = document.getElementById('change-system-button');
         buttonChangesystem.addEventListener('click', handler_changesystem);
 
